@@ -1,13 +1,4 @@
-//
-//  ContentView.swift
-//  CalendarTracker
-//
-//  Created by John Doe on 01/12/2024.
-//
-
 import SwiftUI
-
-
 
 
 struct ContentView: View {

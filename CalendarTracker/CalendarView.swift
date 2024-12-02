@@ -1,37 +1,5 @@
 import SwiftUI
 
-
-// MARK: - fucntions
-func generateDaysInMonth() -> [Date] {
-    let calendar = Calendar.current
-    let today = Date()
-    
-    guard let range = calendar.range(of: .day,
-                                     in: .month,
-                                     for: today) else { return [] }
-    
-    return range.compactMap { day -> Date? in
-        var components = calendar.dateComponents([.year, .month], from: today)
-        components.day = day
-        
-        return calendar.date(from: components)
-    }
-}
-
-
-func currentMonthAndYear() -> String {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "MMMM, yyyy"
-    
-    return formatter.string(from: Date())
-}
-
-
-private func isToday(_ date: Date) -> Bool {
-    return Calendar.current.isDateInToday(date)
-}
-
-
 // MARK: - content views
 struct DayView: View {
     let day: Date
@@ -53,26 +21,51 @@ struct DayView: View {
 
 
 struct CalendarView: View {
-    private let days: [Date] = generateDaysInMonth()
+    @State private var days: [Date] = []
+    @State private var errorMessage: String? = nil
     
     var body: some View {
         VStack {
-            Text(currentMonthAndYear())
+            Text(DateManager.currentMonthAndYear())
                 .font(.system(size: 32, weight: .bold))
                 .padding(.bottom, 10)
                 
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
-                ForEach(0..<days.firstDayOfWeek(), id: \.self) { _ in
-                    Circle()
-                        .frame(width: 25, height: 25)
-                        .foregroundStyle(Color.gray)
+            if let errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .font(.system(size: 20, weight: .bold))
+                    .monospaced()
+                    .padding()
+            } else {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
+                    ForEach(0..<days.weekdayOffset(), id: \.self) { _ in
+                        Circle()
+                            .frame(width: 25, height: 25)
+                            .foregroundStyle(Color.gray)
+                    }
+                    
+                    ForEach(days, id: \.self) { day in
+                        DayView(day: day, isToday: DateManager.isToday(day))
+                    }
                 }
-                
-                ForEach(days, id: \.self) { day in
-                    DayView(day: day, isToday: isToday(day))
-                }
+                .padding()
             }
-            .padding()
+        }
+        .onAppear {
+            loadDays()
+        }
+    }
+    
+    private func loadDays() {
+        do {
+            days = try DateManager.generateDatesForCurrentMonth()
+            if days.isEmpty {
+                throw CalendarError.emptyDatesArray
+            }
+        } catch CalendarError.emptyDatesArray {
+            errorMessage = "Failed to generate dates for the current month."
+        } catch {
+            errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
         }
     }
 }
