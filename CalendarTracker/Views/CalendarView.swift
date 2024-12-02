@@ -3,6 +3,7 @@ import SwiftUI
 
 struct CalendarView: View {
     @State private var days: [Date] = []
+    @State private var events: [Event] = []
     @State private var errorMessage: String? = nil
     
     var body: some View {
@@ -20,9 +21,7 @@ struct CalendarView: View {
             } else {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
                     ForEach(0..<days.weekdayOffset(), id: \.self) { _ in
-                        Circle()
-                            .frame(width: 25, height: 25)
-                            .foregroundStyle(Color.gray)
+                        Color.clear
                     }
                     
                     ForEach(days, id: \.self) { day in
