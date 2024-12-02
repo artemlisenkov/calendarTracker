@@ -6,4 +6,6 @@ protocol EventProtocol {
     var date: Date { get }
     var color: Color { get }
     var targetQuantity: Int { get }
+    var timePeriod: Calendar.Component { get }
+
 }
