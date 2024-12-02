@@ -3,15 +3,18 @@ import SwiftUI
 
 struct CalendarView: View {
     @State private var days: [Date] = []
-    @State private var events: [Event] = []
+    @State private var events: [Date: [Event]] = [:]
     @State private var errorMessage: String? = nil
     
     var body: some View {
         VStack {
+            
+            // Current Month & Year
             Text(DateManager.currentMonthAndYear())
                 .font(.system(size: 32, weight: .bold))
                 .padding(.bottom, 10)
-                
+            
+            // Error displaying
             if let errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.red)
@@ -19,13 +22,22 @@ struct CalendarView: View {
                     .monospaced()
                     .padding()
             } else {
+                // Starting offset
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
                     ForEach(0..<days.weekdayOffset(), id: \.self) { _ in
                         Color.clear
                     }
                     
+                    // Day displaying
                     ForEach(days, id: \.self) { day in
-                        DayView(day: day, isToday: DateManager.isToday(day))
+                        DayView(
+                            day: day,
+                            isToday: DateManager.isToday(day),
+                            events: events[day] ?? []
+                        )
+                        .onTapGesture {
+                            addEventTo(to: day)
+                        }
                     }
                 }
                 .padding()
@@ -48,6 +60,24 @@ struct CalendarView: View {
             errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
         }
     }
+    
+    
+    private func addEventTo(to day: Date) {
+            // Пример добавления события
+            let newEvent = Event(
+                name: "Test Event",
+                date: day,
+                color: .blue, // Пример цвета
+                targetQuantity: 5,
+                timePeriod: .weekOfMonth
+            )
+
+            if events[day] != nil {
+                events[day]?.append(newEvent)
+            } else {
+                events[day] = [newEvent]
+            }
+        }
 }
 
 
