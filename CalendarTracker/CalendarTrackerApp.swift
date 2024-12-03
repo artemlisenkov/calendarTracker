@@ -4,7 +4,7 @@ import SwiftUI
 struct CalendarTrackerApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CalendarView()
         }
     }
 }
