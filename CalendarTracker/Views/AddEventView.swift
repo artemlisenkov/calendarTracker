@@ -1,20 +1,23 @@
 import SwiftUI
 
 struct AddEventView: View {
+    @ObservedObject var viewModel: AddEventViewModel
     @Binding var isAddingEvent: Bool
-    @Binding var events: [Date: [Event]]
     @Binding var selectedDay: Date
-
-    @State private var eventName: String = ""
-    @State private var eventColor: Color = .blue
-    @State private var goalQuantity: Int = 1
 
     var body: some View {
         NavigationView {
             Form {
-                TextField("Event Name", text: $eventName)
-                ColorPicker("Event Color", selection: $eventColor)
-                Stepper("Total: \(goalQuantity)", value: $goalQuantity, in: 1...100)
+                TextField("Event Name", text: $viewModel.eventName)
+                ColorPicker("Event Color", selection: $viewModel.eventColor)
+                Stepper("Total: \(viewModel.goalQuantity)", value: $viewModel.goalQuantity, in: 1...100)
+                
+                if let errorMessage = viewModel.errorMessage {
+                    Text(errorMessage)
+                        .foregroundColor(.red)
+                        .font(.callout)
+                        .padding(.vertical, 5)
+                }
             }
             .navigationTitle("Add Event")
             .toolbar {
@@ -25,28 +28,12 @@ struct AddEventView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        saveEvent()
-                        isAddingEvent = false
+                        if viewModel.saveEvent(for: selectedDay) {
+                            isAddingEvent = false
+                        }
                     }
                 }
             }
         }
-    }
-
-    private func saveEvent() {
-        guard !eventName.isEmpty else { return }
-        
-        let newEvent = Event(
-            name: eventName,
-            date: selectedDay,
-            color: eventColor,
-            targetQuantity: goalQuantity,
-            timePeriod: .weekOfYear
-        )
-        
-        if events[selectedDay] == nil {
-            events[selectedDay] = []
-        }
-        events[selectedDay]?.append(newEvent)
     }
 }

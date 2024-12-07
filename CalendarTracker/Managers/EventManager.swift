@@ -1,42 +1,34 @@
 import Foundation
+import SwiftUI
 
+class EventManager: ObservableObject {
+    @Published var events: [Date: [Event]] = [:]
 
-// MARK: - Event manager
-struct EventManager {
-    static var events: [Event] = []
-    
-    static func addEvent(_ newEvent: Event, to events: inout [Event]) throws {
-        if let existingEvent = events.first(where: { $0.name == newEvent.name }) {
-            throw EventError.duplicateName(existingEvent)
+    func addEvent(_ newEvent: Event, for day: Date) throws {
+        if events[day]?.contains(where: { $0.name == newEvent.name }) == true {
+            throw EventError.duplicateName(newEvent)
         }
-        
-        if let existingEvent = events.first(where: { $0.color == newEvent.color }) {
-            throw EventError.duplicateColor(existingEvent)
+        if events[day]?.contains(where: { $0.color == newEvent.color }) == true {
+            throw EventError.duplicateColor(newEvent)
         }
-        
-        events.append(newEvent)
+        if events[day] == nil {
+            events[day] = []
+        }
+        events[day]?.append(newEvent)
     }
-    
-    
-    static func updateEvent(_ existingEvent: Event, with newEvent: Event, in events: inout [Event]) throws {
-        events.removeAll(where: { $0.id == existingEvent.id })
-        
-        try addEvent(newEvent, to: &events)
+
+    func createEvent(name: String, color: Color, goalQuantity: Int, date: Date) throws {
+        let newEvent = Event(
+            name: name,
+            date: date,
+            color: color,
+            targetQuantity: goalQuantity,
+            timePeriod: .weekOfYear
+        )
+        try addEvent(newEvent, for: date)
     }
-    
-    static func removeEvent(_ event: Event) {
-        events.removeAll(where: {$0.id == event.id})
-    }
-    
-    static func findEvent(byName name: String) -> Event? {
-        return events.first(where: { $0.name == name })
-    }
-    
-    static func currentEvents(forDate date: Date) -> [Event] {
-        return events.filter { Calendar.current.isDate($0.date, inSameDayAs: date)}
-    }
-    
-    static func getEvents() -> [Event] {
-        return events
+
+    func getEvents(for day: Date) -> [Event] {
+        return events[day] ?? []
     }
 }

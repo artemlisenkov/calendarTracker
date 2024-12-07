@@ -2,47 +2,46 @@ import SwiftUI
 
 
 struct CalendarView: View {
-    @State private var days: [Date] = []
-    @State private var events: [Date: [Event]] = [:]
-    @State private var errorMessage: String? = nil
-    
-    @State private var selectedDay: Date = Date()
-    @State private var isAddingEvent: Bool = false
-    
+    @StateObject var viewModel = CalendarViewModel()
+
     var body: some View {
-        VStack (spacing: 30) {
-            
+        VStack(spacing: 20) {
             HStack {
                 Text(DateManager.currentMonthAndYear())
                     .font(.system(size: 32, weight: .bold))
                     .padding(.bottom, 10)
             }
-            // Error displaying
-            if let errorMessage {
+
+            HStack {
+                ForEach(DateManager.shortWeekdaySymbols(), id: \.self) { day in
+                    Text(day)
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .padding(.horizontal)
+
+            if let errorMessage = viewModel.errorMessage {
                 Text(errorMessage)
                     .foregroundColor(.red)
                     .font(.system(size: 20, weight: .bold))
                     .monospaced()
                     .padding()
             } else {
-                // Starting offset
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
-                    ForEach(0..<days.weekdayOffset(), id: \.self) { _ in
-                        RoundedRectangle(cornerRadius: 10)
-                            .frame(minWidth: 45, minHeight: 65)
-                            .foregroundStyle(Color.gray.opacity(0.1))
+                    ForEach(0..<viewModel.days.weekdayOffset(), id: \.self) { _ in
+                        Text("")
                     }
-                    
-                    // Day displaying
-                    ForEach(days, id: \.self) { day in
+                    ForEach(viewModel.days, id: \.self) { day in
                         DayView(
                             day: day,
                             isToday: DateManager.isToday(day),
-                            events: events[day] ?? []
+                            events: viewModel.eventManager.getEvents(for: day)
                         )
                         .onTapGesture {
-                            selectedDay = day
-                            isAddingEvent = true
+                            viewModel.selectedDay = day
+                            viewModel.isAddingEvent = true
                         }
                     }
                 }
@@ -50,30 +49,22 @@ struct CalendarView: View {
             }
         }
         .onAppear {
-            loadDays()
+            viewModel.loadDays()
         }
-        .sheet(isPresented: $isAddingEvent) {
-            AddEventView(isAddingEvent: $isAddingEvent,
-                         events: $events,
-                         selectedDay: $selectedDay)
-        }
-    }
-    
-    private func loadDays() {
-        do {
-            days = try DateManager.generateDatesForCurrentMonth()
-            if days.isEmpty {
-                throw CalendarError.emptyDatesArray
-            }
-        } catch CalendarError.emptyDatesArray {
-            errorMessage = "Failed to generate dates for the current month."
-        } catch {
-            errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
+        .sheet(isPresented: $viewModel.isAddingEvent) {
+            AddEventView(
+                viewModel: AddEventViewModel(eventManager: viewModel.eventManager),
+                isAddingEvent: $viewModel.isAddingEvent,
+                selectedDay: $viewModel.selectedDay
+            )
         }
     }
 }
 
 
 #Preview {
+    @Previewable @StateObject var eventManager: EventManager = EventManager()
+    
     CalendarView()
+        .environmentObject(eventManager)
 }

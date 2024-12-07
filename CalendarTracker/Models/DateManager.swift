@@ -31,6 +31,13 @@ struct DateManager {
         return formatter.string(from: Date())
     }
     
+    static func shortWeekdaySymbols() -> [String] {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+    
+        return formatter.shortWeekdaySymbols
+    }
+    
     
     static func isToday(_ date: Date) -> Bool {
         return Calendar.current.isDateInToday(date)
