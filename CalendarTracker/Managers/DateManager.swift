@@ -2,12 +2,13 @@ import Foundation
 
 
 struct DateManager {
-    static func generateDatesForCurrentMonth() throws -> [Date] {
+    static func generateDatesForMonth() throws -> [Date] {
         let calendar = Calendar.current
         let today = Date()
         
         guard let range = calendar.range(of: .day, in: .month, for: today) else {
-            throw CalendarError.emptyDatesArray }
+            throw CalendarError.emptyDatesArray
+        }
         
         let dates = range.compactMap { day -> Date? in
             var components = calendar.dateComponents([.year, .month], from: today)
@@ -24,12 +25,22 @@ struct DateManager {
     }
     
     
-    static func currentMonthAndYear() -> String {
+//    static func generateDatesForOffsetMonth(for date: Date, by offset: Int) throws -> [Date] {
+//        guard let nextMonth = Calendar.current.date(byAdding: .month, value: offset, to: date) else {
+//            throw CalendarError.invalidDate
+//        }
+//        
+//        return try generateDatesForMonth(from: nextMonth)
+//    }
+    
+    
+    static func retrieveMonthAndYear() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM, yyyy"
         
         return formatter.string(from: Date())
     }
+    
     
     static func shortWeekdaySymbols() -> [String] {
         let formatter = DateFormatter()

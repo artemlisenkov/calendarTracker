@@ -10,14 +10,14 @@ class CalendarViewModel: ObservableObject {
 
     func loadDays() {
         do {
-            days = try DateManager.generateDatesForCurrentMonth()
+            days = try DateManager.generateDatesForMonth()
             if days.isEmpty {
                 throw CalendarError.emptyDatesArray
             }
-        } catch CalendarError.emptyDatesArray {
-            errorMessage = "Failed to generate dates for the current month."
+        } catch let error as CalendarError {
+            errorMessage = error.localizedDescription
         } catch {
-            errorMessage = "An unexpected error occurred: \(error.localizedDescription)"
+            errorMessage = "Something went wrong"
         }
     }
 }

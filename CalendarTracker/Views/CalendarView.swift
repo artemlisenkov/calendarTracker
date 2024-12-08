@@ -7,7 +7,7 @@ struct CalendarView: View {
     var body: some View {
         VStack(spacing: 20) {
             HStack {
-                Text(DateManager.currentMonthAndYear())
+                Text(DateManager.retrieveMonthAndYear())
                     .font(.system(size: 32, weight: .bold))
                     .padding(.bottom, 10)
             }
