@@ -33,6 +33,7 @@ struct CalendarView: View {
                     ForEach(0..<viewModel.days.weekdayOffset(), id: \.self) { _ in
                         Text("")
                     }
+                    
                     ForEach(viewModel.days, id: \.self) { day in
                         DayView(
                             day: day,

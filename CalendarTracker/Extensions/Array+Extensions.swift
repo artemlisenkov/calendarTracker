@@ -7,9 +7,8 @@ extension Array where Element == Date {
         
         let calendar = Calendar.current
         let weekday = calendar.component(.weekday, from: firstDate)
-        let firstWeekday = calendar.firstWeekday
         
-        let offset = (weekday - firstWeekday + 7) % 7
+        let offset = (weekday + 5) % 7
         return offset
     }
 }

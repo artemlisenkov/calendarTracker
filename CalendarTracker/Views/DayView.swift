@@ -9,7 +9,7 @@ struct DayView: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
-                .frame(minWidth: 45, minHeight: 65)
+                .frame(width: 45, height: 65)
                 .foregroundStyle(isToday ? Color.red.opacity(0.6) : Color.gray.opacity(0.25))
             
             VStack {
@@ -20,8 +20,8 @@ struct DayView: View {
                             .frame(width: 8, height: 8)
                     }
                 }
-                .padding(.top, 10)
-                
+                .padding(.top, 12)
+               
                 Spacer()
 
                 Text("\(Calendar.current.component(.day, from: day))")

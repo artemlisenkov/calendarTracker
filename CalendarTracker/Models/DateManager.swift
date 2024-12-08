@@ -35,7 +35,11 @@ struct DateManager {
         let formatter = DateFormatter()
         formatter.locale = Locale.current
     
-        return formatter.shortWeekdaySymbols
+        var symbols = formatter.shortWeekdaySymbols
+        let sunday = symbols?.removeFirst()
+        symbols?.append(sunday!)
+        
+        return symbols!
     }
     
     
