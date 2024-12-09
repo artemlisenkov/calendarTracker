@@ -7,10 +7,32 @@ struct CalendarView: View {
     var body: some View {
         VStack(spacing: 20) {
             HStack {
-                Text(DateManager.retrieveMonthAndYear())
+                Button(action: {
+                    viewModel.changeMonth(by: -1)
+                },
+                       label: {
+                    Image(systemName: "chevron.left")
+                        .font(.title2)
+                        .padding()
+                })
+                
+                Spacer()
+                
+                Text(viewModel.monthAndYear)
                     .font(.system(size: 32, weight: .bold))
-                    .padding(.bottom, 10)
+                
+                Spacer()
+                
+                Button(action: {
+                    viewModel.changeMonth(by: 1)
+                },
+                       label: {
+                    Image(systemName: "chevron.right")
+                        .font(.title2)
+                        .padding()
+                })
             }
+            .padding(.bottom, 10)
 
             HStack {
                 ForEach(DateManager.shortWeekdaySymbols(), id: \.self) { day in
