@@ -2,16 +2,16 @@ import Foundation
 
 
 struct DateManager {
-    static func generateDatesForMonth() throws -> [Date] {
-        let calendar = Calendar.current
-        let today = Date()
-        
-        guard let range = calendar.range(of: .day, in: .month, for: today) else {
+    private static let calendar = Calendar.current
+
+    
+    static func generateDatesForMonth(for date: Date) throws -> [Date] {
+        guard let range = calendar.range(of: .day, in: .month, for: date) else {
             throw CalendarError.emptyDatesArray
         }
         
         let dates = range.compactMap { day -> Date? in
-            var components = calendar.dateComponents([.year, .month], from: today)
+            var components = calendar.dateComponents([.year, .month], from: date)
             components.day = day
             
             return calendar.date(from: components)
@@ -25,6 +25,17 @@ struct DateManager {
     }
     
     
+    static func changeDateByMonth(by offset: Int, from date: Date) throws -> Date? {
+        guard let changedDate = calendar.date(byAdding: .month, value: offset, to: date)
+        else {
+            throw CalendarError.invalidDate
+
+        }
+        
+        return changedDate
+    }
+    
+    
 //    static func generateDatesForOffsetMonth(for date: Date, by offset: Int) throws -> [Date] {
 //        guard let nextMonth = Calendar.current.date(byAdding: .month, value: offset, to: date) else {
 //            throw CalendarError.invalidDate
@@ -34,11 +45,11 @@ struct DateManager {
 //    }
     
     
-    static func retrieveMonthAndYear() -> String {
+    static func retrieveMonthAndYear(from date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM, yyyy"
         
-        return formatter.string(from: Date())
+        return formatter.string(from: date)
     }
     
     
