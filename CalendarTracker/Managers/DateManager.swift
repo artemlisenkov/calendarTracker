@@ -35,16 +35,7 @@ struct DateManager {
         return changedDate
     }
     
-    
-//    static func generateDatesForOffsetMonth(for date: Date, by offset: Int) throws -> [Date] {
-//        guard let nextMonth = Calendar.current.date(byAdding: .month, value: offset, to: date) else {
-//            throw CalendarError.invalidDate
-//        }
-//        
-//        return try generateDatesForMonth(from: nextMonth)
-//    }
-    
-    
+
     static func retrieveMonthAndYear(from date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM, yyyy"

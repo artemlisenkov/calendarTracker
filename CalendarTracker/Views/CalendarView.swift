@@ -7,30 +7,33 @@ struct CalendarView: View {
     var body: some View {
         VStack(spacing: 20) {
             HStack {
-                Button(action: {
-                    viewModel.changeMonth(by: -1)
-                },
-                       label: {
+                Button {
+                    withAnimation {
+                        viewModel.changeMonth(by: -1)
+                    }
+                } label: {
                     Image(systemName: "chevron.left")
                         .font(.title2)
                         .padding()
-                })
+                }
                 
                 Spacer()
                 
                 Text(viewModel.monthAndYear)
                     .font(.system(size: 32, weight: .bold))
+                    .transition(.scale)
                 
                 Spacer()
                 
-                Button(action: {
-                    viewModel.changeMonth(by: 1)
-                },
-                       label: {
+                Button {
+                    withAnimation {
+                        viewModel.changeMonth(by: 1)
+                    }
+                } label: {
                     Image(systemName: "chevron.right")
                         .font(.title2)
                         .padding()
-                })
+                }
             }
             .padding(.bottom, 10)
 
@@ -62,24 +65,14 @@ struct CalendarView: View {
                             isToday: DateManager.isToday(day),
                             events: viewModel.eventManager.getEvents(for: day)
                         )
-                        .onTapGesture {
-                            viewModel.selectedDay = day
-                            viewModel.isAddingEvent = true
-                        }
                     }
                 }
+                .frame(height: viewModel.rowHeight * 6, alignment: .top)
                 .padding()
             }
         }
         .onAppear {
             viewModel.loadDays()
-        }
-        .sheet(isPresented: $viewModel.isAddingEvent) {
-            AddEventView(
-                viewModel: AddEventViewModel(eventManager: viewModel.eventManager),
-                isAddingEvent: $viewModel.isAddingEvent,
-                selectedDay: $viewModel.selectedDay
-            )
         }
     }
 }

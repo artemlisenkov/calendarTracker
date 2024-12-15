@@ -6,7 +6,7 @@ class CalendarViewModel: ObservableObject {
     @Published var dateForGenerating: Date = Date()
     @Published var errorMessage: String? = nil
     @Published var monthAndYear: String = DateManager.retrieveMonthAndYear(from: Date())
-    @Published var isAddingEvent: Bool = false
+    @Published var rowHeight: CGFloat = 65
 
     let eventManager = EventManager()
 

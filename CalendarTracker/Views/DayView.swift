@@ -4,8 +4,12 @@ import SwiftUI
 struct DayView: View {
     let day: Date
     let isToday: Bool
-    let events: [Event]
-
+    @State var events: [Event]
+    
+    @State private var showMenu: Bool = false
+    @State private var showEvents: Bool = false
+    @State private var showAddEvent: Bool = false
+    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 10)
@@ -29,6 +33,22 @@ struct DayView: View {
                     .fontWeight(.bold)
                     .padding(.bottom, 10)
             }
+        }
+        .contextMenu {
+            Button("Add") { showAddEvent.toggle() }
+            Button("Events") { showEvents.toggle() }
+        }
+
+        .sheet(isPresented: $showAddEvent) {
+            AddEventView(
+                viewModel: AddEventViewModel(eventManager: EventManager()),
+                isAddingEvent: $showAddEvent,
+                selectedDay: .constant(day)
+            )
+        }
+        
+        .sheet(isPresented: $showEvents) {
+            EventsListView(events: $events, selectedDay: day)
         }
     }
 }
