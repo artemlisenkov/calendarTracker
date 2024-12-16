@@ -7,7 +7,7 @@ class AddEventViewModel: ObservableObject {
     
     @Published var errorMessage: String?
 
-    private let eventManager: EventManager
+    let eventManager: EventManager
 
     
     init(eventManager: EventManager) {

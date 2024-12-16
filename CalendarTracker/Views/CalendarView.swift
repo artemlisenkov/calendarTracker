@@ -63,7 +63,7 @@ struct CalendarView: View {
                         DayView(
                             day: day,
                             isToday: DateManager.isToday(day),
-                            events: viewModel.eventManager.getEvents(for: day)
+                            events: viewModel.eventManager.bindingEvents(for: day)
                         )
                     }
                 }

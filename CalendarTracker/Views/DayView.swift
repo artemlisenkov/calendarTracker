@@ -4,7 +4,8 @@ import SwiftUI
 struct DayView: View {
     let day: Date
     let isToday: Bool
-    @State var events: [Event]
+    
+    @Binding var events: [Event]
     
     @State private var showMenu: Bool = false
     @State private var showEvents: Bool = false
@@ -48,7 +49,10 @@ struct DayView: View {
         }
         
         .sheet(isPresented: $showEvents) {
-            EventsListView(events: $events, selectedDay: day)
+            EventsListView(
+                events: $events,
+                selectedDay: day
+            )
         }
     }
 }

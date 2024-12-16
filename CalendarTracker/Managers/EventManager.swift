@@ -28,7 +28,14 @@ class EventManager: ObservableObject {
         try addEvent(newEvent, for: date)
     }
 
-    func getEvents(for day: Date) -> [Event] {
-        return events[day] ?? []
+//    func getEvents(for day: Date) -> [Event] {
+//        return events[day] ?? []
+//    }
+//    
+    func bindingEvents(for day: Date) -> Binding<[Event]> {
+        Binding(
+            get: { self.events[day, default: []] },
+            set: { self.events[day] = $0 }
+        )
     }
 }
