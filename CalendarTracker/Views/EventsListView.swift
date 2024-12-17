@@ -17,9 +17,14 @@ struct EventsListView: View {
                         VStack(alignment: .leading) {
                             Text(event.name)
                                 .font(.headline)
-                            Text(event.date.formattedDateAndTime)
-                                .font(.subheadline)
-                                .foregroundColor(.gray)
+                            HStack {
+                                Text(event.date.formattedDate)
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                                Circle()
+                                    .fill(event.color)
+                                    .frame(width: 10, height: 10)
+                            }
                         }
                     }
                 }

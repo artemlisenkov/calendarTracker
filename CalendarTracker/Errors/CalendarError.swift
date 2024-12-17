@@ -1,7 +1,7 @@
 import Foundation
 
 
-enum CalendarError: Error {
+enum CalendarError: LocalizedError {
     case emptyDatesArray
     case invalidDate
     

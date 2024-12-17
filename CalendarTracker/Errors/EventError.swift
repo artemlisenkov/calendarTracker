@@ -1,7 +1,7 @@
 import Foundation
 
 
-enum EventError: Error {
+enum EventError: LocalizedError {
     case duplicateName(Event)
     case duplicateColor(Event)
     

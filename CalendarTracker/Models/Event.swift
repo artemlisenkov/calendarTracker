@@ -8,3 +8,4 @@ struct Event: Identifiable, EventProtocol {
     let targetQuantity: Int
     let timePeriod: Calendar.Component
 }
+

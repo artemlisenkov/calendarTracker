@@ -1,17 +1,14 @@
 import Foundation
 
 extension Date {
-    var formattedDate: String {
+    private static let mediumFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
-        return formatter.string(from: self)
-    }
-
-    var formattedDateAndTime: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter.string(from: self)
+        return formatter
+    }()
+    
+    var formattedDate: String {
+        Self.mediumFormatter.string(from: self)
     }
 }
 

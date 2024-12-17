@@ -62,8 +62,7 @@ struct CalendarView: View {
                     ForEach(viewModel.days, id: \.self) { day in
                         DayView(
                             day: day,
-                            isToday: DateManager.isToday(day),
-                            events: viewModel.eventManager.bindingEvents(for: day)
+                            isToday: DateManager.isToday(day)
                         )
                     }
                 }
